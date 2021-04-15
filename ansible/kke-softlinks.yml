@@ -1,0 +1,39 @@
+#
+# Step 1: Simply save this file as playbook.yml in the required folder
+# Step 2: Run `ansible-playbook -i inventory playbook.yml`
+# Step 3: Verify: Check that the files are created by running
+#         ansible all -a "ls -ltr /opt/security/" -i inventory
+#
+# For tips on getting better at Ansible tasks, check out the README.md
+# in this folder
+#
+- name: Create text files and create soft link
+  hosts: stapp01, stapp02, stapp03
+  become: yes
+  tasks:
+    - name: Create the blog.txt on stapp01
+      file:
+        path: /opt/security/blog.txt
+        owner: tony
+        group: tony
+        state: touch
+      when: inventory_hostname == "stapp01"
+    - name: Create the story.txt on stapp02
+      file:
+        path: /opt/security/story.txt
+        owner: steve
+        group: steve
+        state: touch
+      when: inventory_hostname == "stapp02"
+    - name: Create the media.txt on stapp03
+      file:
+        path: /opt/security/media.txt
+        owner: banner
+        group: banner
+        state: touch
+      when: inventory_hostname == "stapp03"
+    - name: Link /opt/security directory
+      file:
+        src: /opt/security/
+        dest: /var/www/html
+        state: link

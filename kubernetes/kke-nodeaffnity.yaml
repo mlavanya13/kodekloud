@@ -1,0 +1,34 @@
+#
+# Step 1: kubectl label nodes node01 color=pink
+# Step 2: kubectl create -f <This file>
+# Step 3: Verify: Wait until the pod is in running state on node01
+#
+# For tips on getting better at Kubernetes tasks, check out the README.md
+# in this folder
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pink
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-pod
+  template:
+    metadata:
+      labels:
+        app: nginx-pod
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: color
+                    operator: In
+                    values:
+                      - pink
+      containers:
+        - name: nginx-container
+          image: nginx:latest

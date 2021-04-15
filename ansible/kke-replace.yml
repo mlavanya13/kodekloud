@@ -1,0 +1,31 @@
+#
+# Step 1: Simply save this file as playbook.yml in the required folder
+# Step 2: Run `ansible-playbook -i inventory playbook.yml`
+# Step 3: Verify: Check that the files are updated by running
+#         ansible all -a "cat /opt/sysops/*.txt" -i inventory
+#
+# For tips on getting better at Ansible tasks, check out the README.md
+# in this folder
+#
+- name: Ansible replace
+  hosts: stapp01,stapp02,stapp03
+  become: yes
+  tasks:
+    - name: blog.txt replacement
+      replace:
+        path: /opt/sysops/blog.txt
+        regexp: "xFusionCorp"
+        replace: "Nautilus"
+      when: inventory_hostname == "stapp01"
+    - name: story.txt replacement
+      replace:
+        path: /opt/sysops/story.txt
+        regexp: "Nautilus"
+        replace: "KodeKloud"
+      when: inventory_hostname == "stapp02"
+    - name: media.txt replacement
+      replace:
+        path: /opt/sysops/media.txt
+        regexp: "KodeKloud"
+        replace: "xFusionCorp Industries"
+      when: inventory_hostname == "stapp03"

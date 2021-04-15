@@ -1,0 +1,27 @@
+#
+# Step 1: kubectl create -f <this file>
+# Step 2: Make sure the pod is in Running state. Note down the name i.e. countdown-datacenter-xxxx
+# Step 3: Verify: `kubectl logs countdown-datacenter-xxxx`
+#     You should see the values in args below printed
+#
+# For tips on getting better at Kubernetes tasks, check out the README.md
+# in this folder
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: countdown-datacenter
+spec:
+  template:
+    metadata:
+      name: countdown-datacenter
+    spec:
+      containers:
+        - name: container-countdown-datacenter
+          image: centos:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "for i in ten nine eight seven six five four three two one ; do echo $i ; done",
+            ]
+      restartPolicy: Never

@@ -1,0 +1,51 @@
+#
+# Step 1: kubectl create namespace jenkins
+# Step 2: kubectl create -f <this file>
+# Step 3: Wait for the pods to be in running state. Note down the pod name.
+# Step 4: kubectl exec <podname> --namespace jenkins -- cat
+#         /var/lib/jenkins/secrets/initialAdminPassword
+# Step 5: Verify: kubectl exec <podname> --namespace jenkins
+#         -- curl http://localhost:8080/
+#         You should see a valid HTML content being returned
+# Step 6: Verify: Open Jenkins app on browser by clicking 'Open Port on Host 1'
+#         and port as NodePort below. You should see the page without any errors
+#
+# For tips on getting better at Kubernetes tasks, check out the README.md
+# in this folder
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: jenkins
+spec:
+  type: NodePort
+  selector:
+    app: jenkins
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30008
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  namespace: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins-container
+          image: jenkins
+          ports:
+            - containerPort: 8080

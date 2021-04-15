@@ -1,0 +1,28 @@
+#
+# Step 1: kubectl create -f <this file>
+# Step 2: Make sure the pod is in Running state
+# Step 3: Verify: `kubectl logs print-envars-greeting`
+#     You should see 'Welcome to xFusionCorp Industries' printed by the Pod
+#
+# For tips on getting better at Kubernetes tasks, check out the README.md
+# in this folder
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: print-envars-greeting
+  labels:
+    name: print-envars-greeting
+spec:
+  containers:
+    - name: print-env-container
+      image: bash
+      env:
+        - name: GREETING
+          value: "Welcome to"
+        - name: COMPANY
+          value: "xFusionCorp"
+        - name: GROUP
+          value: "Industries"
+      command: ["echo"]
+      args: ["$(GREETING) $(COMPANY) $(GROUP)"]
